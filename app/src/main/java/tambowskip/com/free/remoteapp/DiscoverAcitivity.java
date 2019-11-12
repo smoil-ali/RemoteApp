@@ -44,7 +44,7 @@ public class DiscoverAcitivity extends AppCompatActivity    {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover_acitivity);
-
+        init();
 
         new task().execute();
     }
