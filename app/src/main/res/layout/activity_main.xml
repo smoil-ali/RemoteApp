@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:gravity="center"
+    android:id="@+id/drawerlayout"
+    android:fitsSystemWindows="true"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:id="@+id/toolbar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:elevation="4dp"
+            />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+
+            <ImageView
+                android:id="@+id/desktop_pic"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@mipmap/icon_launcher"
+                />
+
+
+            <EditText
+                android:padding="5dp"
+                android:cursorVisible="false"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="192.168.100.7"
+                android:background="@drawable/border"
+                android:id="@+id/ip"
+                android:inputType="numberDecimal"
+                android:layout_below="@id/desktop_pic"
+                android:layout_marginTop="20dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_below="@id/ip"
+                android:text="Connection"
+                android:id="@+id/btn1"
+                android:onClick="Send_to_pc"
+                android:layout_marginTop="10dp"
+                />
+
+        </RelativeLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        android:layout_gravity="start"
+        />
+
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

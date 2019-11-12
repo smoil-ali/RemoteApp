@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MousePad"
+    android:id="@+id/mousePadDrawerLayout"
+    android:fitsSystemWindows="true"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:id="@+id/toolbar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:elevation="4dp"
+            />
+
+        <tambowskip.com.free.remoteapp.TouchEventView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/drawingView"
+            android:layout_below="@id/toolbar"
+            android:layout_above="@id/buttonsLayout"
+            >
+
+        </tambowskip.com.free.remoteapp.TouchEventView>
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/buttonsLayout"
+            android:layout_alignParentBottom="true"
+            >
+
+            <Button
+                android:layout_width="170dp"
+                android:layout_height="match_parent"
+                android:text="R.Click"
+                android:id="@+id/R_click"
+                android:layout_alignParentStart="true"
+                android:onClick="MouseButtons"
+                />
+
+            <Button
+                android:layout_width="170dp"
+                android:layout_height="match_parent"
+                android:text="L.Click"
+                android:id="@+id/L_click"
+                android:layout_alignParentEnd="true"
+                android:onClick="MouseButtons"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="W"
+                android:layout_toLeftOf="@id/L_click"
+                android:layout_toRightOf="@id/R_click"
+                android:id="@+id/wheel"
+                android:onClick="MouseButtons"
+                />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        android:layout_gravity="start"
+        />
+
+</androidx.drawerlayout.widget.DrawerLayout>
