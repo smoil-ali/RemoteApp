@@ -26,8 +26,16 @@
             android:text="Server 1"
             android:id="@+id/serverText"
             android:layout_toRightOf="@+id/serverImage"
-            android:layout_centerVertical="true"
             android:textSize="25dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="192.168.100.1"
+            android:layout_below="@id/serverText"
+            android:layout_toRightOf="@id/serverImage"
+            android:id="@+id/textIp"
             />
 
     </RelativeLayout>
