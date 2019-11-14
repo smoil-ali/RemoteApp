@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -37,13 +38,14 @@ dialogView.NoticeDialogListener{
 
 
     private boolean mouseMoved=false;
-    Button rightClick,leftClick,Wheel;
+    Button rightClick,leftClick;
     NavigationView navigationView;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     RelativeLayout mousepad;
     private Paint paint = new Paint();
     private Path path = new Path();
+    ImageView wheel;
 
 
     @Override
@@ -53,6 +55,39 @@ dialogView.NoticeDialogListener{
         init();
         setSupportActionBar(toolbar);
         mergeNavigationView();
+
+        wheel.setOnTouchListener(new OnSwipeTouchListener(this){
+            @Override
+            public void onSwipeBottom() {
+                super.onSwipeBottom();
+                Toast.makeText(MousePad.this, "wheek click", Toast.LENGTH_SHORT).show();
+                AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!mouseMoved){
+                            MainActivity.printWriter.println("MOUSE_WHEEL"+","+"5");
+                            MainActivity.printWriter.flush();
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onSwipeTop() {
+                super.onSwipeTop();
+                Toast.makeText(MousePad.this, "wheek click", Toast.LENGTH_SHORT).show();
+                AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!mouseMoved){
+                            MainActivity.printWriter.println("MOUSE_WHEEL"+","+"-5");
+                            MainActivity.printWriter.flush();
+                        }
+                    }
+                });
+            }
+        });
     }
 
 
@@ -75,7 +110,6 @@ dialogView.NoticeDialogListener{
     void init(){
         rightClick=findViewById(R.id.R_click);
         leftClick=findViewById(R.id.L_click);
-        Wheel=findViewById(R.id.wheel);
         drawerLayout=findViewById(R.id.mousePadDrawerLayout);
         navigationView=findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -86,6 +120,7 @@ dialogView.NoticeDialogListener{
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
+        wheel=findViewById(R.id.wheelImage);
 
     }
 
@@ -152,12 +187,29 @@ dialogView.NoticeDialogListener{
         switch (id){
             case R.id.L_click:
                 Toast.makeText(this, "left click", Toast.LENGTH_SHORT).show();
+                AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!mouseMoved){
+                            MainActivity.printWriter.println("LEFT_CLICK");
+                            MainActivity.printWriter.flush();
+                        }
+                    }
+                });
                 break;
             case R.id.R_click:
                 Toast.makeText(this, "right click", Toast.LENGTH_SHORT).show();
+                AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!mouseMoved){
+                            MainActivity.printWriter.println("RIGHT_CLICK");
+                            MainActivity.printWriter.flush();
+                        }
+                    }
+                });
                 break;
-            case R.id.wheel:
-                Toast.makeText(this, "wheek click", Toast.LENGTH_SHORT).show();
+
         }
     }
 

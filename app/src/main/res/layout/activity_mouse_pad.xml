@@ -34,18 +34,30 @@
 
         </tambowskip.com.free.remoteapp.TouchEventView>
 
+        <ImageView
+            android:id="@+id/wheelImage"
+            android:layout_below="@id/toolbar"
+            android:layout_above="@id/buttonsLayout"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/border"/>
 
 
 
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:id="@+id/buttonsLayout"
             android:layout_alignParentBottom="true"
+            android:weightSum="2"
+            android:orientation="horizontal"
             >
 
             <Button
-                android:layout_width="170dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="R.Click"
                 android:id="@+id/R_click"
@@ -54,7 +66,8 @@
                 />
 
             <Button
-                android:layout_width="170dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="L.Click"
                 android:id="@+id/L_click"
@@ -62,18 +75,9 @@
                 android:onClick="MouseButtons"
                 />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="W"
-                android:layout_toLeftOf="@id/L_click"
-                android:layout_toRightOf="@id/R_click"
-                android:id="@+id/wheel"
-                android:onClick="MouseButtons"
-                />
 
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

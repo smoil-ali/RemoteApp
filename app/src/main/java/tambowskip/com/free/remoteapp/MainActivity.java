@@ -48,6 +48,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
+
+    public static Socket s;
+    public static InetAddress inetAddress;
+    public String message="Hy There";
+    public static PrintWriter printWriter;
+    public static final int port=1268;
+    boolean isconnected=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new Task().execute("192.168.100.4");
     }
 
     @Override
@@ -85,6 +105,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void Send_to_pc(View view) {
+
+        switch (view.getId()){
+            case R.id.btn1:
+                sendMessage();
+                break;
+            case R.id.ip:
+                sendMessage();
+                break;
+
+        }
+
+    }
+
+    void sendMessage(){
+        AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+            @Override
+            public void run() {
+                printWriter.println(message);
+                printWriter.flush();
+            }
+        });
         startActivity(new Intent(this,functionalities_Activity.class));
         Toast.makeText(this, "button pressed", Toast.LENGTH_SHORT).show();
         finish();
@@ -154,5 +195,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         return false;
+    }
+
+    class Task extends AsyncTask<String,Void,Boolean>{
+        @Override
+        protected Boolean  doInBackground(String... ips) {
+            Boolean result=false;
+            try {
+                inetAddress=InetAddress.getByName(ips[0]);
+                Log.i("Host Name",inetAddress.toString());
+                Log.i("Host Address",inetAddress.toString());
+                s=new Socket(inetAddress, port);
+                printWriter=new PrintWriter(s.getOutputStream());
+                printWriter.println("connected");
+                printWriter.flush();
+
+                result=true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            isconnected=result;
+
+            if (isconnected) {
+
+
+                Toast.makeText(MainActivity.this, "Connected" , Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(MainActivity.this,"Not connected please try again",Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
