@@ -82,7 +82,11 @@ public class TouchEventView extends View {
                         AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.printWriter.println(disX+","+disY);
+                                MainActivity.printWriter.println("MOUSE_MOVE");
+                                //send mouse movement to server
+                                MainActivity.printWriter.println(disX);
+                                MainActivity.printWriter.flush();
+                                MainActivity.printWriter.println(disY);
                                 MainActivity.printWriter.flush();
                                 mouseMoved=true;
                             }
@@ -97,7 +101,10 @@ public class TouchEventView extends View {
                         AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.printWriter.println(disY+","+0);
+                                MainActivity.printWriter.println("MOUSE_WHEEL");
+                                MainActivity.printWriter.flush();
+                                MainActivity.printWriter.println(disY);
+                                MainActivity.printWriter.flush();
                                 mouseMoved=true;
                             }
                         });

@@ -2,6 +2,7 @@ package tambowskip.com.free.remoteapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -9,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,7 +29,10 @@ public class functionalities_Activity extends AppCompatActivity implements  Navi
     DrawerLayout drawerLayout;
     Toolbar toolbar;
     RelativeLayout mousePad,keyBoard,runningApps,Camera,power;
+    DialogInterface.OnClickListener dialogClickListener;
+    AlertDialog.Builder builder;
     TextView user_name;
+    String action;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,21 @@ public class functionalities_Activity extends AppCompatActivity implements  Navi
         init();
         setSupportActionBar(toolbar);
         mergeNavigationView();
+        builder = new AlertDialog.Builder(this);
+        dialogClickListener=new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                switch(i) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        sendActionToServer(action.toUpperCase());
+                        dialog.dismiss();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
     }
 
     @Override
@@ -139,6 +159,7 @@ public class functionalities_Activity extends AppCompatActivity implements  Navi
                 break;
             case R.id.powerLayout:
                 showDialog();
+
                 break;
         }
 
@@ -153,6 +174,25 @@ public class functionalities_Activity extends AppCompatActivity implements  Navi
     @Override
     public void onDialogClick(int position) {
         String[] list=getResources().getStringArray(R.array.Power_Off);
-        Toast.makeText(this, list[position], Toast.LENGTH_SHORT).show();
+        action=list[position];
+        showConfirmDialog(action);
+    }
+
+    private void showConfirmDialog(String title) {
+        builder.setTitle(title)
+                .setMessage("Are you sure?")
+                .setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener)
+                .show();
+    }
+
+    private void sendActionToServer(final String action) {
+        AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.printWriter.println(action);
+                MainActivity.printWriter.flush();
+            }
+        });
     }
 }

@@ -1,44 +1,47 @@
 <resources>
+    <array name="Power_Off">
+        <item>Shutdown_PC</item>
+        <item>Restart_PC</item>
+        <item>Sleep_PC</item>
+        <item>Lock_PC</item>
+    </array>
     <string name="app_name">RemoteApp</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="pref_show_bass_label">Show Bass</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <!-- Key name for storing bass in SharedPreferences -->
-    <string name="pref_show_bass_key" translatable="false">show_bass</string>
+    <string name="pref_show_bass_label">Show Bass</string>
 
     <!-- Label for the show mid range checkbox preference -->
-    <string name="pref_show_mid_range_label">Show Mid Range</string>
+    <string name="pref_show_bass_key" translatable="false">show_bass</string>
     <!-- Key name for storing mid range in SharedPreferences -->
-    <string name="pref_show_mid_range_key" translatable="false">show_mid_range</string>
+    <string name="pref_show_mid_range_label">Show Mid Range</string>
 
     <!-- Label for the show treble checkbox preference -->
-    <string name="pref_show_treble_label">Show Treble</string>
+    <string name="pref_show_mid_range_key" translatable="false">show_mid_range</string>
     <!-- Key name for storing treble in SharedPreferences -->
-    <string name="pref_show_treble_key" translatable="false">show_treble</string>
+    <string name="pref_show_treble_label">Show Treble</string>
 
     <!-- Summary for Checkboxes -->
+    <string name="pref_show_treble_key" translatable="false">show_treble</string>
     <string name="pref_show_true">Shown</string>
-    <string name="pref_show_false">Hidden</string>
 
 
     <!-- Label for the size preference -->
-    <string name="pref_size_label">Size Multiplier</string>
+    <string name="pref_show_false">Hidden</string>
 
     <!-- Key name for storing size in SharedPreferences -->
-    <string name="pref_size_key" translatable="false">size</string>
+    <string name="pref_size_label">Size Multiplier</string>
 
     <!-- Default for size preference -->
+    <string name="pref_size_key" translatable="false">size</string>
+
+
     <string name="pref_size_default" translatable="false">1</string>
 
-
     <string name="title">Pick Options</string>
-
-    <array name="Power_Off">
-        <item>Shut Down</item>
-        <item>Sleep</item>
-        <item>Restart</item>
-    </array>
+    
+    <string name="Keyboard">KeyBoard</string>
 
     <!-- Label for the color preference -->
     <string name="pref_color_label">Shape Color</string>
@@ -77,5 +80,8 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

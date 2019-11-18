@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        new Task().execute("192.168.100.4");
+        new Task().execute("192.168.100.7");
     }
 
     @Override
