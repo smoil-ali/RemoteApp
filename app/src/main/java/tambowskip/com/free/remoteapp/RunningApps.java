@@ -141,7 +141,7 @@ dialogView.NoticeDialogListener{
 
     public  void showDialog(){
         DialogFragment dialogFragment=new dialogView();
-        dialogFragment.show(getSupportFragmentManager(),"Power Off");
+        dialogFragment.show(getSupportFragmentManager(),"tag");
     }
 
 

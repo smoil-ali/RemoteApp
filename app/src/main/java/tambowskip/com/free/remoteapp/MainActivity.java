@@ -40,7 +40,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.stealthcopter.networktools.ARPInfo;
 import io.evercam.network.discovery.ScanResult;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnKeyListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     EditText desktop_name;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        new Task().execute("192.168.100.7");
+
     }
 
     @Override
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView=findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         toolbar=findViewById(R.id.toolbar);
-        desktop_name.setOnKeyListener(this);
         navigationView.setCheckedItem(R.id.home_screen);
     }
 
@@ -108,28 +107,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (view.getId()){
             case R.id.btn1:
-                sendMessage();
-                break;
-            case R.id.ip:
-                sendMessage();
+                new Task().execute(desktop_name.getText().toString());
+                startActivity(new Intent(this,functionalities_Activity.class));
+                Toast.makeText(this, "button pressed", Toast.LENGTH_SHORT).show();
+                finish();
                 break;
 
         }
 
     }
 
-    void sendMessage(){
-        AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
-            @Override
-            public void run() {
-                printWriter.println(message);
-                printWriter.flush();
-            }
-        });
-        startActivity(new Intent(this,functionalities_Activity.class));
-        Toast.makeText(this, "button pressed", Toast.LENGTH_SHORT).show();
-        finish();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,18 +171,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-        switch (view.getId()){
-            case R.id.ip:
-                if (i==KeyEvent.KEYCODE_ENTER && keyEvent.getAction()==KeyEvent.ACTION_DOWN){
-                    Send_to_pc(view);
-                    return true;
-                }
 
-        }
-        return false;
-    }
+
 
     class Task extends AsyncTask<String,Void,Boolean>{
         @Override

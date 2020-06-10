@@ -1,8 +1,5 @@
 package tambowskip.com.free.remoteapp;
 
-import android.content.Context;
-import android.graphics.MaskFilter;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -10,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import io.evercam.network.Main;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
-public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,View.OnClickListener, TextWatcher {
+public class KeyBoardFragment extends Fragment implements  View.OnClickListener {
 
     private EditText typeHereEditText;
     private Button ctrlButton, altButton, shiftButton, enterButton, tabButton, escButton, printScrButton, backspaceButton;
@@ -29,7 +29,7 @@ public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,
     private Button cButton, xButton, vButton, aButton, oButton, sButton,bButton,dButton,eButton,gButton,hButton,iButton, jButton,kButton,lButton,mButton,qButton,uButton,yButton;
     private Button ctrlAltTButton, ctrlShiftZButton, altF4Button;
     private String previousText = "";
-
+    private HashMap<Button,Integer> keyList=new HashMap<>();
 
     public KeyBoardFragment() {
         // Required empty public constructor
@@ -42,10 +42,98 @@ public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,
         View view= inflater.inflate(R.layout.fragment_key_board, container, false);
 
         initialization(view);
+        shiftButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                releaseKeyList();
+                String action = "KEY_PRESS";
+                int keyCode=16;
+                sendKeyCodeToServer(action, keyCode);
+                keyList.put(shiftButton,keyCode);
+                shiftButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                return true;
+            }
+        });
+
+        shiftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String action="KEY_RELEASE";
+                int keyCode=16;
+                keyList.remove(shiftButton);
+                shiftButton.setBackgroundResource(android.R.drawable.btn_default_small );
+                sendKeyCodeToServer(action,keyCode);
+
+            }
+        });
+
+        altButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String action="KEY_RELEASE";
+                int keyCode=18;
+                keyList.remove(altButton);
+                altButton.setBackgroundResource(android.R.drawable.btn_default_small );
+                sendKeyCodeToServer(action,keyCode);
+
+            }
+        });
+
+        altButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                releaseKeyList();
+                String action = "KEY_PRESS";
+                int keyCode=18;
+                sendKeyCodeToServer(action, keyCode);
+                keyList.put(altButton,keyCode);
+                altButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                return true;
+
+            }
+        });
+
+        ctrlButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                releaseKeyList();
+                String action = "KEY_PRESS";
+                int keyCode=17;
+                sendKeyCodeToServer(action, keyCode);
+                keyList.put(ctrlButton,keyCode);
+                ctrlButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+                return true;
+            }
+        });
+
+        ctrlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String action="KEY_RELEASE";
+                int keyCode=17;
+                keyList.remove(ctrlButton);
+                ctrlButton.setBackgroundResource(android.R.drawable.btn_default_small );
+                sendKeyCodeToServer(action,keyCode);
+
+            }
+        });
+
 
 
 
         return view;
+    }
+
+    void releaseKeyList(){
+        if (keyList.size()>0) {
+            String action = "KEY_RELEASE";
+            for (Button mButton:keyList.keySet()){
+                mButton.setBackgroundResource(android.R.drawable.btn_default);
+                sendKeyCodeToServer(action,keyList.get(mButton));
+            }
+
+        }
     }
 
     @Override
@@ -95,9 +183,6 @@ public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,
         ctrlAltTButton = (Button) rootView.findViewById(R.id.ctrlAltTButton);
         ctrlShiftZButton = (Button) rootView.findViewById(R.id.ctrlShiftZButton);
         altF4Button = (Button) rootView.findViewById(R.id.altF4Button);
-        ctrlButton.setOnTouchListener(this);
-        altButton.setOnTouchListener(this);
-        shiftButton.setOnTouchListener(this);
         backspaceButton.setOnClickListener(this);
         enterButton.setOnClickListener(this);
         tabButton.setOnClickListener(this);
@@ -133,56 +218,11 @@ public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,
         ctrlAltTButton.setOnClickListener(this);
         ctrlShiftZButton.setOnClickListener(this);
         altF4Button.setOnClickListener(this);
-        typeHereEditText.addTextChangedListener(this);
-    }
 
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
     }
 
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        final char ch = newCharacter(charSequence, previousText);
-        if (ch == 0) {
-            return;
-        }
-        AppExecutors.getInstance().getNetWorkCall().execute(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.printWriter.println("TYPE_CHARACTER");
-                MainActivity.printWriter.flush();
-                MainActivity.printWriter.println(Character.toString(ch));
-                MainActivity.printWriter.flush();
-            }
-        });
-        previousText = charSequence.toString();
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    private char newCharacter(CharSequence currentText, CharSequence previousText) {
-        char ch = 0;
-        int currentTextLength = currentText.length();
-        int previousTextLength = previousText.length();
-        int difference = currentTextLength - previousTextLength;
-        if (currentTextLength > previousTextLength) {
-            if (1 == difference) {
-                ch = currentText.charAt(previousTextLength);
-            }
-        } else if (currentTextLength < previousTextLength) {
-            if (-1 == difference) {
-                ch = '\b';
-            } else {
-                ch = ' ';
-            }
-        }
-        return ch;
-    }
 
     @Override
     public void onClick(View v) {
@@ -330,27 +370,5 @@ public class KeyBoardFragment extends Fragment implements View.OnTouchListener ,
         });
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        String action = "KEY_PRESS";
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            action = "KEY_PRESS";
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            action = "KEY_RELEASE";
-        }
-        int keyCode = 17;//dummy initialization
-        switch (v.getId()) {
-            case R.id.ctrlButton:
-                keyCode = 17;
-                break;
-            case R.id.altButton:
-                keyCode = 18;
-                break;
-            case R.id.shiftButton:
-                keyCode = 16;
-                break;
-        }
-        sendKeyCodeToServer(action, keyCode);
-        return false;
-    }
+
 }

@@ -46,13 +46,11 @@
 
             <EditText
                 android:padding="5dp"
-                android:cursorVisible="false"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="192.168.100.7"
                 android:background="@drawable/border"
                 android:id="@+id/ip"
-                android:inputType="numberDecimal"
                 android:layout_below="@id/desktop_pic"
                 android:layout_marginTop="20dp"
                 />
