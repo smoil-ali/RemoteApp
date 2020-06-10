@@ -1,5 +1,6 @@
 package tambowskip.com.free.remoteapp;
 
+import android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,11 @@ import java.util.List;
 public class ServerList extends RecyclerView.Adapter<ServerList.ViewHolder> {
 
     Context context;
-    List<String> hostList=new ArrayList<>();
-    List<String> IpList=new ArrayList<>();
+    List<ServiceData> serviceData=new ArrayList<ServiceData>();
 
-    public ServerList(Context context, List<String> hostList, List<String> ipList) {
+    public ServerList(Context context, List<ServiceData> serviceData) {
         this.context = context;
-        this.hostList = hostList;
-        IpList = ipList;
+        this.serviceData = serviceData;
     }
 
     @NonNull
@@ -37,20 +36,20 @@ public class ServerList extends RecyclerView.Adapter<ServerList.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ServerList.ViewHolder holder, final int position) {
-        holder.hostName.setText(hostList.get(position));
-        holder.Ip.setText(IpList.get(position));
+        holder.hostName.setText(serviceData.get(position).getServiceName());
+        holder.Ip.setText(serviceData.get(position).getIp());
 
         holder.serverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, hostList.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, serviceData.get(position).getServiceName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return hostList.size();
+        return serviceData.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

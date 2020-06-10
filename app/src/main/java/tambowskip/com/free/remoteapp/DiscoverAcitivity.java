@@ -1,13 +1,17 @@
 package tambowskip.com.free.remoteapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiInfo;
@@ -21,6 +25,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -34,33 +39,30 @@ import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 import javax.jmdns.ServiceTypeListener;
 
+import io.evercam.network.Main;
 
 public class DiscoverAcitivity extends AppCompatActivity    {
 
-    public final String SERVICE_TYPE="_http._tcp.";
+    public static final String SERVICE_TYPE="_http._tcp.";
     NsdManager nsdManager;
-    public static ProgressBar progressBar;
     public final String TAG="values";
+    public static ProgressBar progressBar;
     RecyclerView recyclerView;
     ServerList mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover_acitivity);
 
         init();
+        new task().execute();
 
 
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        nsdManager.stopServiceDiscovery(discoveryListener);
     }
 
     public void init(){
+
         recyclerView=findViewById(R.id.serverRecyclerview);
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -68,19 +70,11 @@ public class DiscoverAcitivity extends AppCompatActivity    {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        new task().execute();
-
-    }
-
     public void showRecyclerView(){
-        mAdapter=new ServerList(DiscoverAcitivity.this,ServerData.getHostList(),ServerData.getIpList());
+        mAdapter=new ServerList(DiscoverAcitivity.this,ServerData.getServiceList());
         recyclerView.setAdapter(mAdapter);
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,6 +88,7 @@ public class DiscoverAcitivity extends AppCompatActivity    {
         switch (id){
             case R.id.discoverMe:
                 Toast.makeText(this, "add me", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, MainActivity.class));
                 break;
         }
         return true;
@@ -128,25 +123,7 @@ public class DiscoverAcitivity extends AppCompatActivity    {
         @Override
         public void onServiceFound(NsdServiceInfo nsdServiceInfo) {
             Log.i(TAG,nsdServiceInfo.toString());
-                nsdManager.resolveService(nsdServiceInfo, new NsdManager.ResolveListener() {
-                    @Override
-                    public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int i) {
-
-                    }
-
-                    @Override
-                    public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
-                        ServerData.HostList.add(nsdServiceInfo.getServiceName());
-                        ServerData.IpList.add(nsdServiceInfo.getHost().toString());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setVisibility(View.GONE);
-                                showRecyclerView();
-                            }
-                        });
-                    }
-                });
+            nsdManager.resolveService(nsdServiceInfo,createResolveListener());
         }
 
         @Override
@@ -155,8 +132,32 @@ public class DiscoverAcitivity extends AppCompatActivity    {
         }
     };
 
+    private NsdManager.ResolveListener createResolveListener() {
+        return new NsdManager.ResolveListener() {
+            @Override
+            public void onResolveFailed(NsdServiceInfo nsdServiceInfo, int i) {
+
+            }
+
+            @Override
+            public void onServiceResolved(NsdServiceInfo nsdServiceInfo) {
+                Log.i(TAG, "Connected" + nsdServiceInfo);
+                String serviceName = nsdServiceInfo.getServiceName();
+                String ip = nsdServiceInfo.getHost().toString();
+                ServiceData serviceData = new ServiceData(serviceName, ip);
+                ServerData.serviceList.add(serviceData);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        showRecyclerView();
+                    }
+                });
+            }
+        };
 
 
+    }
     public class task extends AsyncTask<Void,Void,Void>{
 
 
@@ -168,6 +169,7 @@ public class DiscoverAcitivity extends AppCompatActivity    {
 
         @Override
         protected Void doInBackground(Void... voids) {
+
             nsdManager=(NsdManager)getApplicationContext().getSystemService(getApplicationContext().NSD_SERVICE);
             nsdManager.discoverServices(SERVICE_TYPE,NsdManager.PROTOCOL_DNS_SD,discoveryListener);
             return null;
